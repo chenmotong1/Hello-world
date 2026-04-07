@@ -1,0 +1,134 @@
+# print('hello world')
+
+STOCK = {'name':'平安银行',
+         'code':"000001",
+         'price':12.35,
+         'is_suspended':False,
+         'tags':['银行','金融','沪深300']}
+# print(STOCK)
+
+# for key ,value in STOCK.items():
+#     print(type(key),type(value))
+
+# print(STOCK.items())
+
+# item = {"title" : '财报分析',
+#         "url" : "",
+#         "stock code" : "000001"}
+# if item['url'] :
+#     print('有url')
+# else:
+#     item['url'] = 'unknown'
+# print(item)
+# print(item.items())
+
+def format_stock_report(name,code,price,change_pct):
+    if change_pct > 0:
+        change_pct = '+' + str(change_pct)
+    else:
+        change_pct = str(change_pct)
+    return f'{name}({code})当前价：{price} 跌涨幅:{change_pct}%'
+
+# print(format_stock_report('平安银行','0000001',12.35,-2.35))
+
+stocks =[(1,'平安银行','000001',12.35),
+         (2,'贵州茅台','600219',1800.50),]
+
+# print(f"{'编号':<4} {'股票名称':<8} {'代码':<6} {'价格':<8}")
+
+# for no,name,code,price in stocks:
+#     print(f'{no:<4} {name:<8} {code:<6}   {price:<8}')
+
+def classify_stock(code:str) -> str:
+    code = int(code[0])
+    if code == 6:
+        return '沪市A股'
+    elif code == 0:
+        return '深市主板'
+    elif code == 3:
+        return '创业版'
+    elif code == 8 or code == 4:
+        return '北交所/新三板'
+    
+# print(classify_stock('80664'))
+
+def is_valid_stock_code(code:str) -> bool:
+    if len(code) != 6:
+        return False
+    if int(code[0]) not in [0,3,4,6,8]:
+        return False
+    return True
+
+codes = ["000001","12345","300001","abc","800001","900001"]
+new_codes = []
+for code in codes:
+    if len(code) == 6 and code.isnumeric():
+        new_codes.append(code)
+# print(new_codes)
+
+def paginate_fetch(max_pages,empty_page = 4):
+    for page in range(1,max_pages+1):
+        
+        if page == empty_page:
+            print(f"第{page}页无数据，停止")
+            print(f"总共抓取{page-1}页数据")
+            break
+        print(f"正在抓取第{page}页")
+
+# paginate_fetch(7)
+
+prices = [12.35,1800.50,5.67,45.80,123.45]
+new_prices = []
+for price in prices:
+    if price >100:
+        new_prices.append(f"{price:.1f}%")
+
+# print(new_prices)
+
+news = [
+    {"title":"银行股大涨","source":"finance"},
+    {"title":"茅台创新高","source":"company"},
+    {"title":"芯片板块异动","source":"finance"},
+]
+
+news1 = [dict(new) for new in news]
+news2 = []
+# print(news1)
+
+for item in news1:
+    if item['source'] == 'finance' :
+        news2.append(item)
+# print(news2)
+
+def format_price(price,currency='￥',decimal=2):
+    return f"{currency}{price:.{decimal}f}"
+
+# print(format_price(123.45678))
+# print(format_price(1800.5,currency='$',decimal=1))
+
+from urllib.parse import urljoin,urlencode
+def build_url(base:str,path:str = '',params:dict = None) -> str:
+    url = urljoin(base,path) if base else path
+    if params:
+        url = f"{url}?{urlencode(params)}"
+    return url
+# print(build_url("http://www.baidu.com","api/news"))
+# print(build_url("http://www.baidu.com",params={"page":2,"size":10}))
+
+# ========================================================================================
+
+
+import re
+def parse_stock_raw(raw:str) -> tuple[str,str]:
+    m = re.search(r'\d{6}',raw)
+    print(m)
+    code = m.group()
+    print(code)
+    name = raw.replace(code,'').replace('(','').replace(')','')
+    return (name,code)
+
+# print(parse_stock_raw('平安银行(000001)'))
+# print(parse_stock_raw('000000万科A'))
+
+
+
